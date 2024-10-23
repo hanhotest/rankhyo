@@ -141,6 +141,8 @@ venv.bak/
 
 .migrations/
 .hyo/
+hyo/
+migrations/
 
 # mkdocs documentation
 /site
