@@ -139,6 +139,8 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+/migrations
+
 # mkdocs documentation
 /site
 
