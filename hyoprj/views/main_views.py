@@ -26,7 +26,26 @@ def rank_insert():
         user_rank.score = score
         user_rank.create_date=datetime.now()
         db.session.commit()
-        return jsonify({"result": '성공!'}), 201
+        
+        user_rank = Rank.query.order_by(Rank.score.desc()).filter(Rank.score > user_rank.score).count() + 1
+            
+        try:
+            # 점수 내림차순으로 Rank 테이블에서 데이터를 조회
+            rank_list = Rank.query.order_by(Rank.score.desc()).all()
+
+            # 결과를 JSON으로 변환
+            rank_list = [
+                {
+                    "userid": rank.userid,
+                    "score": rank.score,
+                    "create_date": rank.create_date
+                } for rank in rank_list[0:5]
+            ]
+        except:
+            print('error')
+
+        return jsonify({"uuid": uuid_  , "rank":user_rank, "rank_list":rank_list}), 201
+
     
     elif uuid_=='' or usertype=='2':
         try:
