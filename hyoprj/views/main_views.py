@@ -52,9 +52,22 @@ def rank_insert():
             
             user_rank = Rank.query.order_by(Rank.score.desc()).filter(Rank.score > new_rank.score).count() + 1
             
-            
+            try:
+                # 점수 내림차순으로 Rank 테이블에서 데이터를 조회
+                rank_list = Rank.query.order_by(Rank.score.desc()).all()
 
-            return jsonify({"uuid": new_rank.id  , "rank":user_rank}), 201
+                # 결과를 JSON으로 변환
+                rank_list = [
+                    {
+                        "userid": rank.userid,
+                        "score": rank.score,
+                        "create_date": rank.create_date
+                    } for rank in rank_list[0:5]
+                ]
+            except:
+                print('error')
+
+            return jsonify({"uuid": new_rank.id  , "rank":user_rank, "rank_list":rank_list}), 201
         except Exception as e:
             db.session.rollback()  # 오류 시 롤백
             return jsonify({"error": str(e)}), 500
