@@ -48,13 +48,19 @@ def rank_insert():
             # 데이터베이스에 추가
             db.session.add(new_rank)
             db.session.commit()
+            
+            
+            user_rank = Rank.query.order_by(Rank.score.desc()).filter(Rank.score > new_rank.score).count() + 1
+            
+            
 
-            return jsonify({"uuid": new_rank.id}), 201
+            return jsonify({"uuid": new_rank.id  , "rank":user_rank}), 201
         except Exception as e:
             db.session.rollback()  # 오류 시 롤백
             return jsonify({"error": str(e)}), 500
         
-    
+
+
 
 # 랭킹 리스트를 점수 내림차순으로 보여주는 API
 @bp.route('/rank_list', methods=['GET'])
@@ -69,7 +75,7 @@ def rank_list():
                 "userid": rank.userid,
                 "score": rank.score,
                 "create_date": rank.create_date
-            } for rank in rank_list
+            } for rank in rank_list[0:5]
         ]
 
         return jsonify(result), 200
